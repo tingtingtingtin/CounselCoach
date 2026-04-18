@@ -11,6 +11,7 @@ generator: design-extractor
 # DESIGN.md
 
 ## Colors
+
 - primary-yellow: #ffc700
 - forest-dark: #123333
 - forest-medium: #446464
@@ -22,6 +23,7 @@ generator: design-extractor
 - clay-red: #fe9a9a
 
 ## Typography
+
 - hero-heading: Uncut Sans Variable 56px/61.6px w400
 - display-heading: Uncut Sans Variable 48px/57.6px w400
 - section-heading: Uncut Sans Variable 24px/33.6px w500
@@ -32,6 +34,7 @@ generator: design-extractor
 - label: Uncut Sans Variable 14px/14px w600
 
 ## Spacing
+
 - xxxs: 8px
 - xxs: 12px
 - xs: 16px
@@ -41,6 +44,7 @@ generator: design-extractor
 - xl: 80px
 
 ## Border Radius
+
 - xs: 8px
 - sm: 12px
 - md: 24px
@@ -48,4 +52,5 @@ generator: design-extractor
 - circle: 1000px
 
 ## Fonts
+
 - Uncut Sans Variable (custom)

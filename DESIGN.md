@@ -7,6 +7,7 @@ Generous whitespace with 48px section spacing as the primary rhythm. Content con
 Uses a 8px base grid with scale: 1, 1.5, 2, 3, 4, 6, 10.
 
 ## Colors
+
 - **Primary Yellow** (#ffc700): Primary CTA buttons, brand accents, highlights
 - **Forest Dark** (#123333): Primary text, headings, high contrast elements
 - **Forest Medium** (#446464): Secondary text, navigation, subtle elements
@@ -18,6 +19,7 @@ Uses a 8px base grid with scale: 1, 1.5, 2, 3, 4, 6, 10.
 - **Clay Red** (#fe9a9a): Error states, warnings, alerts
 
 ## Typography
+
 - **Headline Font**: Uncut Sans Variable
 - **Body Font**: Uncut Sans Variable
 - **Label Font**: Uncut Sans Variable
@@ -29,6 +31,7 @@ Uncut Sans Variable serves all typographic roles with weight differentiation cre
 Minimal shadow strategy with subtle elevation on cards and modals. Primary depth is created through color contrast and layering rather than dramatic shadows, maintaining the clean, accessible aesthetic.
 
 ## Components
+
 - **Primary CTA Button**: Yellow background (#ffc700) with rounded corners (24px), medium padding, and semibold text
 - **Secondary Button**: Outlined button with forest green border, transparent background, and forest green text
 - **Feature Card**: White background with 24px border radius, generous padding, and subtle shadow
@@ -37,6 +40,7 @@ Minimal shadow strategy with subtle elevation on cards and modals. Primary depth
 - **Privacy Modal**: White overlay with rounded corners, clear typography hierarchy, and toggle switches
 
 ## Do's and Don'ts
+
 - Do use the yellow primary color sparingly for maximum impact on CTAs and key actions
 - Don't mix border radius values - stick to the defined scale for consistency
 - Do maintain generous whitespace with 48px as the primary section spacing unit
