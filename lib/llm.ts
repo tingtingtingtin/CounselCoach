@@ -132,35 +132,80 @@ export async function generateContent({
 
 // --- JSON extraction ---
 
-function fixUnescapedQuotes(s: string): string {
+/**
+ * Normalize a model-generated pseudo-JSON string into valid JSON.
+ *
+ * Handles two failure modes in a single pass:
+ *   1. Python-dict-style single-quote delimiters  {'key': 'value'}
+ *   2. Unescaped double quotes inside double-quoted strings  "he said "hi""
+ *
+ * Rules applied per character:
+ *   - Both ' and " are treated as string openers when outside a string.
+ *   - Output always uses " as delimiter.
+ *   - Escaped single quotes inside single-quoted strings (\'') become plain '.
+ *   - Literal " inside single-quoted strings are escaped to \".
+ *   - An unescaped " inside a double-quoted string that is NOT followed by a
+ *     JSON structural character (, } ] :) is treated as an inner quote and
+ *     escaped to \".
+ */
+function normalizeJSON(s: string): string {
   let out = "";
   let inString = false;
+  let delimiter = "";
+
   for (let i = 0; i < s.length; i++) {
     const ch = s[i];
+
     if (ch === "\\") {
-      // already-escaped sequence — keep both chars verbatim
-      out += ch + (s[++i] ?? "");
+      const next = s[i + 1] ?? "";
+      if (inString && delimiter === "'" && next === "'") {
+        // \' inside a single-quoted string → plain apostrophe in JSON output
+        out += "'";
+        i++;
+      } else {
+        out += ch + next;
+        i++;
+      }
       continue;
     }
-    if (ch === '"') {
-      if (!inString) {
+
+    if (!inString) {
+      if (ch === '"' || ch === "'") {
         inString = true;
-        out += ch;
+        delimiter = ch;
+        out += '"';
       } else {
-        // Check whether this quote closes the string by peeking ahead for a
-        // JSON structural character after optional whitespace.
+        out += ch;
+      }
+      continue;
+    }
+
+    // --- inside a string ---
+    if (ch === delimiter) {
+      if (delimiter === "'") {
+        // single-quoted string closes normally
+        inString = false;
+        delimiter = "";
+        out += '"';
+      } else {
+        // double-quoted string: only close if followed by a structural char
         const isClosing = /^\s*[,}\]:]/.test(s.slice(i + 1));
         if (isClosing) {
           inString = false;
-          out += ch;
+          delimiter = "";
+          out += '"';
         } else {
-          out += '\\"'; // inner quote — escape it
+          out += '\\"'; // inner unescaped quote
         }
       }
+    } else if (ch === '"' && delimiter === "'") {
+      // literal " inside a single-quoted string must be escaped in JSON
+      out += '\\"';
     } else {
       out += ch;
     }
   }
+
   return out;
 }
 
@@ -171,9 +216,8 @@ export function extractJSON(raw: string): unknown {
   try {
     return JSON.parse(candidate);
   } catch (e) {
-    console.log(candidate);
     if (e instanceof SyntaxError) {
-      return JSON.parse(fixUnescapedQuotes(candidate));
+      return JSON.parse(normalizeJSON(candidate));
     }
     throw e;
   }
