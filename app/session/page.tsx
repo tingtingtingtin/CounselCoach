@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useReducer } from "react";
+import { Suspense, useReducer, useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Turn } from "@/lib/types";
-
-const SCENARIO_ID = "resistant-patient";
-const VOICE_ID = "CwhRBWXzGAHq8TQ4Fs17";
+import { scenarios } from "@/lib/scenarios";
+import { personas, activePersonas } from "@/lib/personas";
 
 interface SessionState {
   history: Turn[];
@@ -16,13 +16,13 @@ interface SessionState {
 }
 
 type SessionAction =
+  | { type: "START_SESSION" }
   | { type: "PATIENT_TURN"; turn: Turn; suggestions: string[] }
   | { type: "TRAINEE_TURN"; turn: Turn }
   | { type: "AUDIO_START" }
   | { type: "AUDIO_END" }
   | { type: "ERROR"; message: string }
-  | { type: "RETRY" }
-  | { type: "START_SESSION" };
+  | { type: "RETRY" };
 
 const initialState: SessionState = {
   history: [],
@@ -63,7 +63,15 @@ function sessionReducer(state: SessionState, action: SessionAction): SessionStat
   }
 }
 
-export default function SessionPage() {
+const SessionContent = () => {
+  const searchParams = useSearchParams();
+  const scenarioId = searchParams.get("scenarioId") ?? scenarios[0].id;
+  const personaId = searchParams.get("personaId") ?? activePersonas[0].id;
+
+  const persona = personas.find((p) => p.id === personaId) ?? activePersonas[0];
+  const scenario = scenarios.find((s) => s.id === scenarioId) ?? scenarios[0];
+  const firstName = persona.patientName.split(" ")[0];
+
   const [state, dispatch] = useReducer(sessionReducer, initialState);
   const { history, suggestions, loading, audioPlaying, error } = state;
 
@@ -71,44 +79,50 @@ export default function SessionPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const playUtterance = useCallback(async (text: string) => {
-    try {
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, voiceId: VOICE_ID }),
-      });
+  // Auto-scroll
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [history, loading, audioPlaying]);
 
-      if (!res.ok) return;
+  const playUtterance = useCallback(
+    async (text: string) => {
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, voiceId: persona.voiceId }),
+        });
 
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+        if (!res.ok) return; // non-fatal — session continues in text-only mode
 
-      if (audioRef.current) {
-        audioRef.current.pause();
-        if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        if (audioRef.current) {
+          audioRef.current.pause();
+          if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
+        }
+
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        dispatch({ type: "AUDIO_START" });
+
+        audio.onended = () => {
+          dispatch({ type: "AUDIO_END" });
+          URL.revokeObjectURL(url);
+        };
+        audio.onerror = () => {
+          dispatch({ type: "AUDIO_END" });
+          URL.revokeObjectURL(url);
+        };
+
+        await audio.play();
+      } catch {
+        dispatch({ type: "AUDIO_END" });
       }
-
-      const audio = new Audio(url);
-      audioRef.current = audio;
-
-      dispatch({ type: "AUDIO_START" });
-
-      audio.onended = () => {
-        dispatch({ type: "AUDIO_END" });
-        URL.revokeObjectURL(url);
-      };
-
-      audio.onerror = () => {
-        dispatch({ type: "AUDIO_END" });
-        URL.revokeObjectURL(url);
-      };
-
-      await audio.play();
-    } catch {
-      dispatch({ type: "AUDIO_END" });
-    }
-  }, []);
+    },
+    [persona.voiceId]
+  );
 
   const fetchPatientResponse = useCallback(
     async (currentHistory: Turn[]) => {
@@ -116,7 +130,7 @@ export default function SessionPage() {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ history: currentHistory, scenarioId: SCENARIO_ID }),
+          body: JSON.stringify({ history: currentHistory, scenarioId, personaId }),
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -128,20 +142,27 @@ export default function SessionPage() {
           timestamp: Date.now(),
         };
 
-        dispatch({ type: "PATIENT_TURN", turn: patientTurn, suggestions: data.suggestions ?? [] });
+        dispatch({
+          type: "PATIENT_TURN",
+          turn: patientTurn,
+          suggestions: data.suggestions ?? [],
+        });
 
         await playUtterance(data.patientUtterance);
       } catch {
-        dispatch({ type: "ERROR", message: "Could not reach the patient. Check your network or try again." });
+        dispatch({
+          type: "ERROR",
+          message: "Could not reach the patient. Check your network or try again.",
+        });
       }
     },
-    [playUtterance]
+    [scenarioId, personaId, playUtterance]
   );
 
-  // Auto-scroll
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [history, loading, audioPlaying]);
+  function handleBeginSession() {
+    dispatch({ type: "START_SESSION" });
+    fetchPatientResponse([]);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -165,21 +186,29 @@ export default function SessionPage() {
     fetchPatientResponse(history);
   }
 
-  const handleBeginSession = () => {
-    dispatch({ type: "START_SESSION" });
-    fetchPatientResponse([]);
-  }
-
   const inputDisabled = loading || audioPlaying;
 
+  // Pre-session: show patient info and a begin button
   if (!state.sessionStarted) {
     return (
-      <div className="max-w-3xl mx-auto px-xs py-md flex flex-col min-h-screen font-sans items-center justify-center">
-        <h1 className="text-xl font-medium text-forest-dark mb-sm">Resistant Patient</h1>
-        <p className="text-sm text-forest-medium mb-md">Marcus Webb · 38</p>
+      <div className="max-w-3xl mx-auto px-xs py-md flex flex-col min-h-screen font-sans items-center justify-center gap-xs text-center">
+        <div className="w-16 h-16 rounded-circle bg-smoke-gray flex items-center justify-center text-forest-medium font-semibold text-xl">
+          {persona.avatarInitials}
+        </div>
+        <div>
+          <p className="text-xl font-medium text-forest-dark">
+            {persona.patientName}
+          </p>
+          <p className="text-sm text-forest-medium mt-xxs">
+            {persona.age} · {scenario.label}
+          </p>
+        </div>
+        <p className="text-sm text-forest-medium max-w-sm leading-relaxed italic">
+          &ldquo;{persona.presentingConcern}&rdquo;
+        </p>
         <button
           onClick={handleBeginSession}
-          className="px-sm py-xxs rounded-circle bg-primary-yellow text-forest-dark font-semibold text-base cursor-pointer"
+          className="mt-xs px-sm py-xxs rounded-circle bg-primary-yellow text-forest-dark font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity"
         >
           Begin Session
         </button>
@@ -187,12 +216,32 @@ export default function SessionPage() {
     );
   }
 
+  // Active session
   return (
     <div className="max-w-3xl mx-auto px-xs py-md flex flex-col min-h-screen font-sans">
-      {/* Header */}
-      <div className="mb-sm">
-        <h1 className="text-xl font-medium text-forest-dark">Resistant Patient</h1>
-        <p className="text-sm text-forest-medium mt-xxs">Marcus Webb · 38</p>
+      {/* Header — avatar with pulse ring + thinking fade */}
+      <div className="mb-sm flex items-center gap-xs">
+        <div className="relative shrink-0">
+          {/* Pulsing ring — visible while audio is playing */}
+          {audioPlaying && (
+            <div className="absolute inset-0 rounded-circle border-2 border-forest-dark animate-pulse" />
+          )}
+          <div
+            className={`w-10 h-10 rounded-circle bg-smoke-gray flex items-center justify-center text-forest-medium font-semibold text-sm transition-opacity duration-300 ${
+              loading ? "opacity-40" : "opacity-100"
+            }`}
+          >
+            {persona.avatarInitials}
+          </div>
+        </div>
+        <div>
+          <p className="text-base font-medium text-forest-dark leading-tight">
+            {persona.patientName}
+          </p>
+          <p className="text-sm text-forest-medium">
+            {persona.age} · {scenario.label}
+          </p>
+        </div>
       </div>
 
       {/* Conversation panel */}
@@ -206,7 +255,9 @@ export default function SessionPage() {
         {history.map((turn, i) => (
           <div
             key={i}
-            className={`flex ${turn.role === "trainee" ? "justify-end" : "justify-start"}`}
+            className={`flex ${
+              turn.role === "trainee" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
               className={`max-w-3/4 px-xs py-xxs text-base leading-relaxed text-forest-dark rounded-sm ${
@@ -219,17 +270,21 @@ export default function SessionPage() {
         ))}
 
         {loading && (
-          <p className="text-forest-light text-sm italic">Marcus is thinking…</p>
+          <p className="text-forest-light text-sm italic">
+            {firstName} is thinking…
+          </p>
         )}
 
         {audioPlaying && !loading && (
-          <p className="text-forest-light text-sm italic">Marcus is speaking…</p>
+          <p className="text-forest-light text-sm italic">
+            {firstName} is speaking…
+          </p>
         )}
 
         <div ref={bottomRef} />
       </div>
 
-      {/* Suggestions */}
+      {/* Suggestions — hidden during patient turn */}
       {suggestions.length > 0 && !loading && !audioPlaying && (
         <div className="mb-xs">
           <p className="text-xs font-semibold tracking-widest uppercase text-forest-light mb-xxs">
@@ -253,7 +308,10 @@ export default function SessionPage() {
       {error && (
         <div className="flex items-center gap-xs px-xs py-xxs rounded-xs bg-clay-red text-forest-dark text-sm mb-xxs">
           <span className="flex-1">{error}</span>
-          <button onClick={handleRetry} className="font-semibold underline cursor-pointer">
+          <button
+            onClick={handleRetry}
+            className="font-semibold underline cursor-pointer"
+          >
             Retry
           </button>
         </div>
@@ -266,7 +324,11 @@ export default function SessionPage() {
           onChange={(e) => setInput(e.target.value)}
           disabled={inputDisabled}
           placeholder={
-            loading ? "Wait for patient…" : audioPlaying ? "Listening…" : "Your response…"
+            loading
+              ? "Wait for patient…"
+              : audioPlaying
+              ? "Listening…"
+              : "Your response…"
           }
           className={`flex-1 px-sm py-xxs rounded-circle border border-forest-light text-base text-forest-dark outline-none font-sans transition-colors ${
             inputDisabled ? "bg-smoke-gray opacity-60" : "bg-white"
@@ -276,12 +338,26 @@ export default function SessionPage() {
           type="submit"
           disabled={inputDisabled || !input.trim()}
           className={`px-sm py-xxs rounded-circle bg-primary-yellow border-none text-forest-dark font-semibold text-base font-sans whitespace-nowrap transition-opacity ${
-            inputDisabled || !input.trim() ? "opacity-45 cursor-not-allowed" : "cursor-pointer"
+            inputDisabled || !input.trim()
+              ? "opacity-45 cursor-not-allowed"
+              : "cursor-pointer"
           }`}
         >
           Send
         </button>
       </form>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page shell — wraps SessionContent in Suspense for useSearchParams
+// ---------------------------------------------------------------------------
+
+export default function SessionPage() {
+  return (
+    <Suspense>
+      <SessionContent />
+    </Suspense>
   );
 }

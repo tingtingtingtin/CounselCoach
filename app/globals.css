@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
   --color-background: #ffffff;
   --color-foreground: #123333;
   --color-primary-yellow: #ffc700;
@@ -14,7 +13,6 @@
   --color-sky-blue: #9fe3f9;
   --color-clay-red: #fe9a9a;
 
-  /* Spacing */
   --spacing-xxxs: 8px;
   --spacing-xxs: 12px;
   --spacing-xs: 16px;
@@ -23,15 +21,20 @@
   --spacing-lg: 48px;
   --spacing-xl: 80px;
 
-  /* Border Radius */
   --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 24px;
   --radius-lg: 48px;
   --radius-circle: 1000px;
 
-  /* Fonts */
   --font-sans: "Uncut Sans", sans-serif;
+
+  /* Typography sizes — semantic tokens from design system */
+  --text-hero-heading: 3.5rem;     /* 56px */
+  --text-display-heading: 3rem;    /* 48px */
+  --text-section-heading: 1.5rem;  /* 24px */
+  --text-subheading: 1.25rem;      /* 20px */
+  --text-small-text: 0.875rem;     /* 14px */
 }
 
 body {
