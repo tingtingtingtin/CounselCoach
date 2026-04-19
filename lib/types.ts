@@ -23,6 +23,19 @@ export interface Scenario {
 }
 
 export interface InsightsResult {
+  summary: string;
   observations: string[];
   suggestions: string[];
+}
+
+export interface SessionRecord {
+  id: string;
+  timestamp: number;
+  personaId: string;
+  scenarioId: string;
+  mode: "chat" | "call";
+  durationSeconds: number;
+  turnCount: number;
+  history: Turn[];
+  insights: InsightsResult;
 }

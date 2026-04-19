@@ -191,22 +191,22 @@ export const personas: Persona[] = [
     voiceNotes: "German male with accent, professional and measured",
     premium: true,
   },
-  {
-    id: "samuel-rosso",
-    patientName: "Dr. Samuel Rosso",
-    age: 64,
-    background:
-      "Retired cardiologist, South African, moved to the US after retirement, resistant to being in the patient role",
-    affect:
-      "Intellectualizes, uses medical framing to deflect, challenges the therapist's approach subtly",
-    recommendedScenario: "resistant-patient",
-    presentingConcern:
-      "I've spent forty years telling patients to take care of themselves. I suppose it's my turn.",
-    avatarInitials: "SR",
-    voiceId: "L5zW3PqYZoWAeS4J1qMV",
-    voiceNotes: "Retired doctor, South African man",
-    premium: true,
-  },
+  // {
+  //   id: "samuel-rosso",
+  //   patientName: "Dr. Samuel Rosso",
+  //   age: 64,
+  //   background:
+  //     "Retired cardiologist, South African, moved to the US after retirement, resistant to being in the patient role",
+  //   affect:
+  //     "Intellectualizes, uses medical framing to deflect, challenges the therapist's approach subtly",
+  //   recommendedScenario: "resistant-patient",
+  //   presentingConcern:
+  //     "I've spent forty years telling patients to take care of themselves. I suppose it's my turn.",
+  //   avatarInitials: "SR",
+  //   voiceId: "L5zW3PqYZoWAeS4J1qMV",
+  //   voiceNotes: "Retired doctor, South African man",
+  //   premium: true,
+  // },
 ];
 
 export const activePersonas = personas.filter((p) => !p.premium);

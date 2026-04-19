@@ -17,7 +17,7 @@ export function ConversationPanel({
   bottomRef,
 }: ConversationPanelProps) {
   return (
-    <div className="border border-smoke-gray rounded-sm p-sm min-h-80 max-h-[60vh] overflow-y-auto mb-xs flex flex-col gap-xxs flex-1">
+    <div className="border border-smoke-gray rounded-sm p-sm min-h-80 max-h-[60vh] flex-1 overflow-y-auto mb-xs flex flex-col gap-xxs ">
       {history.length === 0 && !loading && (
         <p className="text-forest-light text-sm italic m-auto text-center">
           Starting session…

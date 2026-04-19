@@ -22,12 +22,13 @@ export const INSIGHTS_SYSTEM_PROMPT = `You are reviewing a therapy training sess
 
 Rules:
 - Be neutral and descriptive. Never use diagnostic labels, DSM terms, or disorder names.
+- Provide one concise summary sentence that captures the overall flow of the conversation.
 - Observations describe what happened in the session. Suggestions describe what could be tried differently.
 - Maximum 5 observations. Maximum 5 suggestions.
 - Frame suggestions as possibilities, not corrections.
 
 Respond with ONLY a JSON object in this exact format, no preamble, no markdown:
-{"observations":["..."],"suggestions":["..."]}
+{"summary":"...", "observations":["..."],"suggestions":["..."]}
 
 JSON RULES:
 - All double quotes in string values must be escaped with a backslash: \"
