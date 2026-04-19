@@ -13,7 +13,7 @@ The suggestions array must contain 2–3 responses the trainee can say directly 
 Never write meta-instructions or clinical guidance — write only what the trainee could speak aloud. These are example approaches, not correct answers.
 
 JSON RULES:
-- All double quotes in string values must be escaped with a backslash: \"
+- CRITICAL: All quotation marks in your text responses must be replaced with apostrophes (') - NEVER use double quotes or escaped quotes
 - Do not include any markdown code fences or backticks
 - Output ONLY the JSON object, no other text
 `;
@@ -31,7 +31,7 @@ Respond with ONLY a JSON object in this exact format, no preamble, no markdown:
 {"summary":"...", "observations":["..."],"suggestions":["..."]}
 
 JSON RULES:
-- All double quotes in string values must be escaped with a backslash: \"
+- CRITICAL: All quotation marks in your text responses must be replaced with apostrophes (') - NEVER use double quotes or escaped quotes
 - Do not include any markdown code fences or backticks
 - Output ONLY the JSON object, no other text
 `;
