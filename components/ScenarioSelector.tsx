@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import type { Scenario } from "@/lib/types";
 import type { Persona } from "@/lib/personas";
 
@@ -20,13 +21,21 @@ export function ScenarioSelector({
         Choose a Scenario
       </p>
       <div className="flex flex-col gap-xxs">
-        {scenarios.map((scenario) => {
+        {scenarios.map((scenario, index) => {
           const isRecommended =
             selectedPersona.recommendedScenario === scenario.id;
           const isSelected = selectedScenarioId === scenario.id;
           return (
-            <button
+            <motion.button
               key={scenario.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.3,
+                delay: index * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              whileHover={{ y: -2 }}
               onClick={() => onSelectScenario(scenario.id)}
               className={`p-sm rounded-sm border text-left cursor-pointer transition-colors ${
                 isSelected
@@ -39,15 +48,20 @@ export function ScenarioSelector({
                   {scenario.label}
                 </p>
                 {isRecommended && (
-                  <span className="text-small-text font-semibold text-forest-dark bg-primary-yellow rounded-xs px-xxs shrink-0">
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3, duration: 0.2 }}
+                    className="text-small-text font-semibold text-forest-dark bg-primary-yellow rounded-xs px-xxs shrink-0"
+                  >
                     Recommended
-                  </span>
+                  </motion.span>
                 )}
               </div>
               <p className="text-xs text-forest-medium/70 mt-xxs leading-relaxed">
                 {scenario.description}
               </p>
-            </button>
+            </motion.button>
           );
         })}
       </div>

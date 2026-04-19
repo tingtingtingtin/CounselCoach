@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import {
   MessageCircle,
   Phone,
@@ -25,7 +26,12 @@ export function OptionsRow({
   onVolumeChange,
 }: OptionsRowProps) {
   return (
-    <div className="flex items-end gap-xxs">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="flex items-end gap-xxs"
+    >
       {/* Practice Mode — pill toggles */}
       <div className="flex flex-col gap-xxxs">
         <p className="text-xs font-semibold uppercase tracking-widest text-forest-light">
@@ -33,7 +39,7 @@ export function OptionsRow({
         </p>
         <div className="flex rounded-circle border border-forest-light overflow-hidden">
           {(["chat", "call"] as const).map((m) => (
-            <button
+            <motion.button
               key={m}
               type="button"
               onClick={() => onModeChange(m)}
@@ -45,14 +51,19 @@ export function OptionsRow({
             >
               {m === "chat" ? <MessageCircle size={14} /> : <Phone size={14} />}
               {m === "chat" ? "Chat" : "Call"}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
 
       {/* Session Options — icon toggles, chat mode only */}
       {mode === "chat" && (
-        <div className="flex items-center gap-xxxs">
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+          className="flex items-center gap-xxxs"
+        >
           <button
             type="button"
             onClick={() =>
@@ -75,8 +86,8 @@ export function OptionsRow({
           >
             {volumeOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
