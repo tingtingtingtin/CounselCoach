@@ -91,6 +91,7 @@ const SessionContent = () => {
   const { history, suggestions, loading, audioPlaying, error } = state;
 
   const [input, setInput] = useState("");
+  const [inputMode, setInputMode] = useState<"text" | "voice">("text");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -206,6 +207,19 @@ const SessionContent = () => {
     fetchPatientResponse(history);
   }
 
+  async function handleAutoSubmit(text: string) {
+    if (!text || loading || audioPlaying) return;
+
+    const traineeTurn: Turn = {
+      role: "trainee",
+      content: text,
+      timestamp: Date.now(),
+    };
+
+    dispatch({ type: "TRAINEE_TURN", turn: traineeTurn });
+    await fetchPatientResponse([...history, traineeTurn]);
+  }
+
   // Pre-session: show patient info and a begin button
   if (!state.sessionStarted) {
     return (
@@ -272,8 +286,11 @@ const SessionContent = () => {
         input={input}
         onInputChange={setInput}
         onSubmit={handleSubmit}
+        onAutoSubmit={handleAutoSubmit}
         loading={loading}
         audioPlaying={audioPlaying}
+        inputMode={inputMode}
+        onInputModeChange={setInputMode}
       />
     </div>
   );
