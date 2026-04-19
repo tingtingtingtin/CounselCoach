@@ -16,7 +16,7 @@ export function PersonaList({
       <p className="text-small-text font-semibold text-forest-light uppercase tracking-widest mb-sm">
         Choose a Patient
       </p>
-      <div className="border border-smoke-gray rounded-sm overflow-hidden overflow-y-auto max-h-[65vh]">
+      <div className="border border-smoke-gray rounded-t-sm overflow-hidden overflow-y-auto max-h-[35vh]">
         {personas.map((persona) => (
           <button
             key={persona.id}

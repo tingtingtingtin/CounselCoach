@@ -26,3 +26,15 @@ export interface InsightsResult {
   observations: string[];
   suggestions: string[];
 }
+
+export interface SessionRecord {
+  id: string;
+  timestamp: number;
+  personaId: string;
+  scenarioId: string;
+  mode: "chat" | "call";
+  durationSeconds: number;
+  turnCount: number;
+  history: Turn[];
+  insights: InsightsResult;
+}

@@ -6,7 +6,7 @@ interface PersonaProfileCardProps {
 
 export function PersonaProfileCard({ persona }: PersonaProfileCardProps) {
   return (
-    <div className="bg-smoke-gray rounded-sm p-sm">
+    <div className="bg-smoke-gray p-sm rounded-b-sm">
       <p className="text-small-text font-semibold text-forest-light uppercase tracking-widest mb-xxs">
         Patient
       </p>

@@ -23,10 +23,10 @@ export const Footer = () => {
             </h4>
             <nav className="flex flex-col gap-xxxs">
               <Link
-                href="/scenarios"
+                href="/about"
                 className="text-small-text text-forest-dark hover:underline"
               >
-                Scenarios
+                About
               </Link>
               <Link
                 href="/pricing"

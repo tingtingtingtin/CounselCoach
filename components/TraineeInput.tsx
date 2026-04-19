@@ -17,6 +17,8 @@ interface TraineeInputProps {
   audioPlaying: boolean;
   inputMode: "text" | "voice";
   onInputModeChange: (mode: "text" | "voice") => void;
+  callMode?: boolean;
+  onListeningChange?: (speaking: boolean) => void;
 }
 
 export function TraineeInput({
@@ -28,6 +30,8 @@ export function TraineeInput({
   audioPlaying,
   inputMode,
   onInputModeChange,
+  callMode = false,
+  onListeningChange,
 }: TraineeInputProps) {
   const {
     transcript,
@@ -40,6 +44,10 @@ export function TraineeInput({
   const disabled = loading || audioPlaying;
   const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingTranscriptRef = useRef<string>("");
+
+  useEffect(() => {
+    onListeningChange?.(inputMode === "voice" && listening && !audioPlaying && !loading);
+  }, [inputMode, listening, audioPlaying, loading, onListeningChange]);
 
   // Auto-switch to text mode if microphone becomes unavailable
   useEffect(() => {
@@ -104,6 +112,35 @@ export function TraineeInput({
     onAutoSubmit,
     resetTranscript,
   ]);
+
+  if (callMode) {
+    if (!browserSupportsSpeechRecognition || !isMicrophoneAvailable) {
+      return (
+        <div className="flex flex-col gap-xxs">
+          <p className="text-xs text-white/60 text-center">
+            Microphone unavailable — using text input
+          </p>
+          <form onSubmit={onSubmit} className="flex gap-xxs items-center">
+            <input
+              value={input}
+              onChange={(e) => onInputChange(e.target.value)}
+              disabled={disabled}
+              placeholder={loading ? "Wait for patient…" : "Your response…"}
+              className={`flex-1 px-sm py-xxs rounded-circle border border-white/20 text-base text-white bg-white/10 outline-none font-sans transition-colors ${disabled ? "opacity-60" : ""}`}
+            />
+            <button
+              type="submit"
+              disabled={disabled || !input.trim()}
+              className={`px-sm py-xxs rounded-circle bg-primary-yellow border-none text-forest-dark font-semibold text-base font-sans whitespace-nowrap transition-opacity ${disabled || !input.trim() ? "opacity-45 cursor-not-allowed" : "cursor-pointer"}`}
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      );
+    }
+    return null;
+  }
 
   return (
     <form onSubmit={onSubmit} className="flex gap-xxs items-center">
