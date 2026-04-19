@@ -132,8 +132,48 @@ export async function generateContent({
 
 // --- JSON extraction ---
 
+function fixUnescapedQuotes(s: string): string {
+  let out = "";
+  let inString = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === "\\") {
+      // already-escaped sequence — keep both chars verbatim
+      out += ch + (s[++i] ?? "");
+      continue;
+    }
+    if (ch === '"') {
+      if (!inString) {
+        inString = true;
+        out += ch;
+      } else {
+        // Check whether this quote closes the string by peeking ahead for a
+        // JSON structural character after optional whitespace.
+        const isClosing = /^\s*[,}\]:]/.test(s.slice(i + 1));
+        if (isClosing) {
+          inString = false;
+          out += ch;
+        } else {
+          out += '\\"'; // inner quote — escape it
+        }
+      }
+    } else {
+      out += ch;
+    }
+  }
+  return out;
+}
+
 export function extractJSON(raw: string): unknown {
   const matches = raw.match(/\{[\s\S]*\}/g);
   if (!matches) throw new Error("No JSON object found in response");
-  return JSON.parse(matches[matches.length - 1]);
+  const candidate = matches[matches.length - 1];
+  try {
+    return JSON.parse(candidate);
+  } catch (e) {
+    if (e instanceof SyntaxError) {
+      return JSON.parse(fixUnescapedQuotes(candidate));
+    }
+    throw e;
+  }
 }
