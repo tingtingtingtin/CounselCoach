@@ -3,6 +3,7 @@
 ## Active Voices
 
 ### Dave → Marcus Webb
+
 **voice id:** 7Nn6g4wKiuh6PdenI9wx
 **voice notes:** american male, witty, deadpan, dry, slightly anxious
 
@@ -17,6 +18,7 @@
 ---
 
 ### Ash → Lauren Price
+
 **voice id:** m3yAHyFEFKtbCIM5n7GF
 **voice notes:** american woman, sad and moody, dissociated
 
@@ -31,6 +33,7 @@
 ---
 
 ### Carol → Carol Emerson
+
 **voice id:** 5u41aNhyCU6hXOcjPPv0
 **voice notes:** elderly woman, deeper voice, relatable, real
 
@@ -45,6 +48,7 @@
 ---
 
 ### Xiaoxi → Xiaoxi Chen
+
 **voice id:** rk9BD4xwuG39syvDIBQy
 **voice notes:** gender-neutral, middle-aged, raspy, slight chinese accent, kind and friendly
 
@@ -65,6 +69,7 @@ Not used in the primary build. Available for expansion if time permits or for a 
 ---
 
 ### Brayden
+
 **voice id:** 3XOBzXhnDY98yeWQ3GdM
 **voice notes:** teenage american male, cheery, clear, chill
 **potential use:** Adolescent therapy scenario — resistant teenage patient brought in by parents
@@ -73,6 +78,7 @@ Not used in the primary build. Available for expansion if time permits or for a 
 ---
 
 ### Nicole
+
 **voice id:** mrDMz4sYNCz18XYFpmyV
 **voice notes:** caribbean woman, jamaican accent, rich and expressive
 **potential use:** High-affect anxiety or grief presentation
@@ -81,6 +87,7 @@ Not used in the primary build. Available for expansion if time permits or for a 
 ---
 
 ### Herrmann → Klaus Herrmann
+
 **voice id:** au7Q2pqB7wdio9LWlvt7
 **voice notes:** german male, professional and measured, german accent
 **potential use:** High-functioning professional, reluctant first session
@@ -89,6 +96,7 @@ Not used in the primary build. Available for expansion if time permits or for a 
 ---
 
 ### Dr. Samuel Rosso
+
 **voice id:** L5zW3PqYZoWAeS4J1qMV
 **voice notes:** retired doctor, south african man
 **potential use:** Medical professional resistant to being a patient — strong dramatic irony for therapist training

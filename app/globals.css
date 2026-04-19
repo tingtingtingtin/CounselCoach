@@ -30,11 +30,11 @@
   --font-sans: "Uncut Sans", sans-serif;
 
   /* Typography sizes — semantic tokens from design system */
-  --text-hero-heading: 3.5rem;     /* 56px */
-  --text-display-heading: 3rem;    /* 48px */
-  --text-section-heading: 1.5rem;  /* 24px */
-  --text-subheading: 1.25rem;      /* 20px */
-  --text-small-text: 0.875rem;     /* 14px */
+  --text-hero-heading: 3.5rem; /* 56px */
+  --text-display-heading: 3rem; /* 48px */
+  --text-section-heading: 1.5rem; /* 24px */
+  --text-subheading: 1.25rem; /* 20px */
+  --text-small-text: 0.875rem; /* 14px */
 }
 
 body {

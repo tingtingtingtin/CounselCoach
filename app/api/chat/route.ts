@@ -35,7 +35,10 @@ export async function POST(req: NextRequest) {
 
     const scenario = scenarios.find((s) => s.id === scenarioId);
     if (!scenario) {
-      return NextResponse.json({ error: "Scenario not found" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Scenario not found" },
+        { status: 400 },
+      );
     }
 
     const persona = personas.find((p) => p.id === personaId);
@@ -58,9 +61,10 @@ ${scenario.systemPrompt}`;
     const REGION = process.env.GCP_LOCATION ?? "global";
     const MODEL = process.env.MODEL ?? "google/gemma-4-26b-a4b-it-maas";
 
-    const baseURL = REGION === "global"
-      ? `https://aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/global/endpoints/openapi`
-      : `https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/endpoints/openapi`;
+    const baseURL =
+      REGION === "global"
+        ? `https://aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/global/endpoints/openapi`
+        : `https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/endpoints/openapi`;
 
     const accessToken = await getAccessToken();
 
@@ -72,14 +76,28 @@ ${scenario.systemPrompt}`;
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
       ...(history.length === 0
-        ? [{ role: "user" as const, content: "Hello, I'm here to listen. What brings you in today?" }]
+        ? [
+            {
+              role: "user" as const,
+              content: "Hello, I'm here to listen. What brings you in today?",
+            },
+          ]
         : [
-            { role: "user" as const, content: "Hello, I'm here to listen. What brings you in today?" },
+            {
+              role: "user" as const,
+              content: "Hello, I'm here to listen. What brings you in today?",
+            },
             ...history.slice(0, -1).map((turn) => ({
-              role: turn.role === "patient" ? "assistant" as const : "user" as const,
+              role:
+                turn.role === "patient"
+                  ? ("assistant" as const)
+                  : ("user" as const),
               content: turn.content,
             })),
-            { role: "user" as const, content: history[history.length - 1].content },
+            {
+              role: "user" as const,
+              content: history[history.length - 1].content,
+            },
           ]),
     ];
 
@@ -110,7 +128,7 @@ ${scenario.systemPrompt}`;
     console.error("[/api/chat]", err);
     return NextResponse.json(
       { error: "Failed to generate patient response" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

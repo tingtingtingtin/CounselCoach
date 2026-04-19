@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     if (!apiKey) {
       return NextResponse.json(
         { error: "ElevenLabs API key not configured" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -24,9 +24,9 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           text,
-          model_id: "eleven_turbo_v2_5"
+          model_id: "eleven_turbo_v2_5",
         }),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       console.error("[/api/tts] ElevenLabs error:", response.status, detail);
       return NextResponse.json(
         { error: "TTS request failed" },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     console.error("[/api/tts]", err);
     return NextResponse.json(
       { error: "Failed to generate speech" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -22,7 +22,6 @@ export interface Scenario {
   systemPrompt: string;
 }
 
-
 export interface InsightsResult {
   observations: string[];
   suggestions: string[];
