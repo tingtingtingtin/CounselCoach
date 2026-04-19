@@ -34,10 +34,13 @@ export function ChatSession({
   const firstName = persona.patientName.split(" ")[0];
 
   const [state, dispatch] = useSessionState();
-  const { history, suggestions, loading, audioPlaying, error, sessionStarted } = state;
+  const { history, suggestions, loading, audioPlaying, error, sessionStarted } =
+    state;
 
   const [input, setInput] = useState("");
-  const [inputMode, setInputMode] = useState<"text" | "voice">(initialInputMode);
+  const [inputMode, setInputMode] = useState<"text" | "voice">(
+    initialInputMode,
+  );
   const [endDialogOpen, setEndDialogOpen] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -45,14 +48,25 @@ export function ChatSession({
   const startTimeRef = useRef<number | null>(null);
 
   const handleAutoEnd = useCallback(
-    (h: Turn[]) => onSessionEnd({ history: h, startTime: startTimeRef.current!, endTime: Date.now() }),
+    (h: Turn[]) =>
+      onSessionEnd({
+        history: h,
+        startTime: startTimeRef.current!,
+        endTime: Date.now(),
+      }),
     [onSessionEnd],
   );
 
   const { fetchPatientResponse } = useSessionActions({
-    dispatch, audioRef,
-    voiceId: persona.voiceId, personaId, scenarioId,
-    history, sessionStarted, audioPlaying, volumeOn,
+    dispatch,
+    audioRef,
+    voiceId: persona.voiceId,
+    personaId,
+    scenarioId,
+    history,
+    sessionStarted,
+    audioPlaying,
+    volumeOn,
     onAutoEnd: handleAutoEnd,
   });
 
@@ -66,7 +80,11 @@ export function ChatSession({
     e.preventDefault();
     const text = input.trim();
     if (!text || loading || audioPlaying) return;
-    const turn: Turn = { role: "trainee", content: text, timestamp: Date.now() };
+    const turn: Turn = {
+      role: "trainee",
+      content: text,
+      timestamp: Date.now(),
+    };
     dispatch({ type: "TRAINEE_TURN", turn });
     setInput("");
     await fetchPatientResponse([...history, turn]);
@@ -74,7 +92,11 @@ export function ChatSession({
 
   async function handleAutoSubmit(text: string) {
     if (!text || loading || audioPlaying) return;
-    const turn: Turn = { role: "trainee", content: text, timestamp: Date.now() };
+    const turn: Turn = {
+      role: "trainee",
+      content: text,
+      timestamp: Date.now(),
+    };
     dispatch({ type: "TRAINEE_TURN", turn });
     await fetchPatientResponse([...history, turn]);
   }
@@ -86,13 +108,19 @@ export function ChatSession({
           {persona.avatarInitials}
         </div>
         <div>
-          <p className="text-xl font-medium text-forest-dark">{persona.patientName}</p>
-          <p className="text-sm text-forest-medium mt-xxs">{persona.age} · {scenario.label}</p>
+          <p className="text-xl font-medium text-forest-dark">
+            {persona.patientName}
+          </p>
+          <p className="text-sm text-forest-medium mt-xxs">
+            {persona.age} · {scenario.label}
+          </p>
         </div>
         <div className="mt-sm">
           <p className="text-sm text-left mb-xxxs">Presenting Concern</p>
           <blockquote className="pl-xs border-l-4 border-forest-light">
-            <p className="text-sm text-forest-medium italic leading-relaxed">{persona.presentingConcern}</p>
+            <p className="text-sm text-forest-medium italic leading-relaxed">
+              {persona.presentingConcern}
+            </p>
           </blockquote>
         </div>
         <button
@@ -123,7 +151,9 @@ export function ChatSession({
           <Dialog.Portal>
             <Dialog.Backdrop className="fixed inset-0 bg-black/30 z-40" />
             <Dialog.Popup className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-sm p-md shadow-lg max-w-2xl w-full font-sans">
-              <Dialog.Title className="text-base font-semibold text-forest-dark mb-xxs">End this session?</Dialog.Title>
+              <Dialog.Title className="text-base font-semibold text-forest-dark mb-xxs">
+                End this session?
+              </Dialog.Title>
               <Dialog.Description className="text-sm text-forest-medium mb-sm">
                 Your conversation will be reviewed for insights.
               </Dialog.Description>
@@ -134,7 +164,11 @@ export function ChatSession({
                 <button
                   onClick={() => {
                     setEndDialogOpen(false);
-                    onSessionEnd({ history, startTime: startTimeRef.current!, endTime: Date.now() });
+                    onSessionEnd({
+                      history,
+                      startTime: startTimeRef.current!,
+                      endTime: Date.now(),
+                    });
                   }}
                   className="px-sm py-xxs rounded-circle bg-forest-dark text-white text-sm font-semibold cursor-pointer border-none hover:opacity-90 transition-opacity"
                 >
@@ -164,7 +198,10 @@ export function ChatSession({
       {error && (
         <ErrorBanner
           error={error}
-          onRetry={() => { dispatch({ type: "RETRY" }); fetchPatientResponse(history); }}
+          onRetry={() => {
+            dispatch({ type: "RETRY" });
+            fetchPatientResponse(history);
+          }}
         />
       )}
 

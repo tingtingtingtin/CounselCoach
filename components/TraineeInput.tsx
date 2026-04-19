@@ -46,7 +46,9 @@ export function TraineeInput({
   const pendingTranscriptRef = useRef<string>("");
 
   useEffect(() => {
-    onListeningChange?.(inputMode === "voice" && listening && !audioPlaying && !loading);
+    onListeningChange?.(
+      inputMode === "voice" && listening && !audioPlaying && !loading,
+    );
   }, [inputMode, listening, audioPlaying, loading, onListeningChange]);
 
   // Auto-switch to text mode if microphone becomes unavailable

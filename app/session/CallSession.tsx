@@ -21,7 +21,12 @@ interface CallSessionProps {
   onSessionEnd: (payload: SessionEndPayload) => void;
 }
 
-export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: CallSessionProps) {
+export function CallSession({
+  personaId,
+  scenarioId,
+  volumeOn,
+  onSessionEnd,
+}: CallSessionProps) {
   const persona = personas.find((p) => p.id === personaId) ?? activePersonas[0];
   const scenario = scenarios.find((s) => s.id === scenarioId) ?? scenarios[0];
 
@@ -37,20 +42,35 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
   const startTimeRef = useRef<number | null>(null);
 
   const handleAutoEnd = useCallback(
-    (h: Turn[]) => onSessionEnd({ history: h, startTime: startTimeRef.current!, endTime: Date.now() }),
+    (h: Turn[]) =>
+      onSessionEnd({
+        history: h,
+        startTime: startTimeRef.current!,
+        endTime: Date.now(),
+      }),
     [onSessionEnd],
   );
 
   const { fetchPatientResponse } = useSessionActions({
-    dispatch, audioRef,
-    voiceId: persona.voiceId, personaId, scenarioId,
-    history, sessionStarted, audioPlaying, volumeOn,
+    dispatch,
+    audioRef,
+    voiceId: persona.voiceId,
+    personaId,
+    scenarioId,
+    history,
+    sessionStarted,
+    audioPlaying,
+    volumeOn,
     onAutoEnd: handleAutoEnd,
   });
 
   async function handleAutoSubmit(text: string) {
     if (!text || loading || audioPlaying) return;
-    const turn: Turn = { role: "trainee", content: text, timestamp: Date.now() };
+    const turn: Turn = {
+      role: "trainee",
+      content: text,
+      timestamp: Date.now(),
+    };
     dispatch({ type: "TRAINEE_TURN", turn });
     setInput("");
     setHintIndex(null);
@@ -59,12 +79,16 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
 
   function handleHint() {
     if (suggestions.length === 0) return;
-    setHintIndex((prev) => prev === null ? 0 : (prev + 1) % suggestions.length);
+    setHintIndex((prev) =>
+      prev === null ? 0 : (prev + 1) % suggestions.length,
+    );
   }
 
   const canShowHint = suggestions.length > 0 && !audioPlaying && !loading;
-  const activeHintIndex = hintIndex !== null && suggestions[hintIndex] ? hintIndex : null;
-  const shownHint = activeHintIndex !== null ? suggestions[activeHintIndex] : null;
+  const activeHintIndex =
+    hintIndex !== null && suggestions[hintIndex] ? hintIndex : null;
+  const shownHint =
+    activeHintIndex !== null ? suggestions[activeHintIndex] : null;
 
   if (!sessionStarted) {
     return (
@@ -73,10 +97,16 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
           {persona.avatarInitials}
         </div>
         <div>
-          <p className="text-3xl font-medium text-white">{persona.patientName}</p>
-          <p className="text-md text-white/50 mt-xxs">{persona.age} · {scenario.label}</p>
+          <p className="text-3xl font-medium text-white">
+            {persona.patientName}
+          </p>
+          <p className="text-md text-white/50 mt-xxs">
+            {persona.age} · {scenario.label}
+          </p>
         </div>
-        <p className="text-sm text-white/40 italic max-w-64 leading-relaxed">{persona.presentingConcern}</p>
+        <p className="text-sm text-white/40 italic max-w-64 leading-relaxed">
+          {persona.presentingConcern}
+        </p>
         <button
           onClick={() => {
             startTimeRef.current = Date.now();
@@ -127,7 +157,10 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
         <TraineeInput
           input={input}
           onInputChange={setInput}
-          onSubmit={(e) => { e.preventDefault(); handleAutoSubmit(input.trim()); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAutoSubmit(input.trim());
+          }}
           onAutoSubmit={handleAutoSubmit}
           loading={loading}
           audioPlaying={audioPlaying}
@@ -144,7 +177,11 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
           type="button"
           onClick={handleHint}
           disabled={!canShowHint}
-          title={activeHintIndex === null ? "Hint" : `Hint ${activeHintIndex + 1} / ${suggestions.length}`}
+          title={
+            activeHintIndex === null
+              ? "Hint"
+              : `Hint ${activeHintIndex + 1} / ${suggestions.length}`
+          }
           className={`flex items-center justify-center w-16 h-16 rounded-circle border border-white/20 bg-white/14 backdrop-blur-md transition-colors shadow-[0_12px_32px_rgba(0,0,0,0.24)] ${
             canShowHint
               ? "cursor-pointer hover:bg-white/22 text-white/92"
@@ -161,7 +198,9 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
           <Dialog.Portal>
             <Dialog.Backdrop className="fixed inset-0 bg-black/50 z-40" />
             <Dialog.Popup className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-sm p-md shadow-lg max-w-2xl w-full font-sans">
-              <Dialog.Title className="text-base font-semibold text-forest-dark mb-xxs">End this session?</Dialog.Title>
+              <Dialog.Title className="text-base font-semibold text-forest-dark mb-xxs">
+                End this session?
+              </Dialog.Title>
               <Dialog.Description className="text-sm text-forest-medium mb-sm">
                 Your conversation will be reviewed for insights.
               </Dialog.Description>
@@ -172,7 +211,11 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
                 <button
                   onClick={() => {
                     setEndDialogOpen(false);
-                    onSessionEnd({ history, startTime: startTimeRef.current!, endTime: Date.now() });
+                    onSessionEnd({
+                      history,
+                      startTime: startTimeRef.current!,
+                      endTime: Date.now(),
+                    });
                   }}
                   className="px-sm py-xxs rounded-circle bg-forest-dark text-white text-sm font-semibold cursor-pointer border-none hover:opacity-90 transition-opacity"
                 >
@@ -196,7 +239,9 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
             className="absolute bottom-16 left-1/2 -translate-x-1/2 w-full max-w-3xl px-md z-10"
           >
             <div className="flex items-center gap-xs rounded-sm p-sm border border-white/20 bg-white/12 backdrop-blur-md shadow-[0_12px_32px_rgba(0,0,0,0.24)]">
-              <p className="flex-1 text-base text-white leading-relaxed">{shownHint}</p>
+              <p className="flex-1 text-base text-white leading-relaxed">
+                {shownHint}
+              </p>
               <button
                 type="button"
                 onClick={() => handleAutoSubmit(shownHint)}
@@ -208,7 +253,6 @@ export function CallSession({ personaId, scenarioId, volumeOn, onSessionEnd }: C
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

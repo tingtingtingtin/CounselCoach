@@ -61,7 +61,10 @@ export function SessionContainer({
         };
         saveSession(record);
       } catch {
-        setInsights({ observations: ["Unable to load insights."], suggestions: [] });
+        setInsights({
+          observations: ["Unable to load insights."],
+          suggestions: [],
+        });
       }
       setInsightsLoading(false);
     },

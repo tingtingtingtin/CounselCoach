@@ -58,8 +58,14 @@ export function useSessionActions({
         audioRef.current = audio;
         dispatch({ type: "AUDIO_START" });
 
-        audio.onended = () => { dispatch({ type: "AUDIO_END" }); URL.revokeObjectURL(url); };
-        audio.onerror = () => { dispatch({ type: "AUDIO_END" }); URL.revokeObjectURL(url); };
+        audio.onended = () => {
+          dispatch({ type: "AUDIO_END" });
+          URL.revokeObjectURL(url);
+        };
+        audio.onerror = () => {
+          dispatch({ type: "AUDIO_END" });
+          URL.revokeObjectURL(url);
+        };
 
         await audio.play();
       } catch {
@@ -71,10 +77,16 @@ export function useSessionActions({
 
   const fetchPatientResponse = useCallback(
     async (currentHistory: Turn[]) => {
-      const patientTurnCount = currentHistory.filter((t) => t.role === "patient").length;
+      const patientTurnCount = currentHistory.filter(
+        (t) => t.role === "patient",
+      ).length;
       const isClosing = patientTurnCount >= TURN_LIMIT;
       try {
-        const data = await apiFetchPatientResponse(currentHistory, scenarioId, personaId);
+        const data = await apiFetchPatientResponse(
+          currentHistory,
+          scenarioId,
+          personaId,
+        );
         const patientTurn: Turn = {
           role: "patient",
           content: data.patientUtterance,
@@ -88,7 +100,11 @@ export function useSessionActions({
         if (isClosing) isClosingTurnRef.current = true;
         await playUtterance(data.patientUtterance);
       } catch {
-        dispatch({ type: "ERROR", message: "Could not reach the patient. Check your network or try again." });
+        dispatch({
+          type: "ERROR",
+          message:
+            "Could not reach the patient. Check your network or try again.",
+        });
       }
     },
     [dispatch, scenarioId, personaId, playUtterance],

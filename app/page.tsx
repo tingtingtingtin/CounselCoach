@@ -16,13 +16,17 @@ const defaultScenarioId = defaultPersona.recommendedScenario ?? scenarios[0].id;
 
 export default function HomePage() {
   const router = useRouter();
-  const [selectedPersonaId, setSelectedPersonaId] = useState<string>(defaultPersona.id);
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(defaultScenarioId);
+  const [selectedPersonaId, setSelectedPersonaId] = useState<string>(
+    defaultPersona.id,
+  );
+  const [selectedScenarioId, setSelectedScenarioId] =
+    useState<string>(defaultScenarioId);
   const [mode, setMode] = useState<"chat" | "call">("chat");
   const [inputMode, setInputMode] = useState<"text" | "voice">("text");
   const [volumeOn, setVolumeOn] = useState(true);
 
-  const selectedPersona = personas.find((p) => p.id === selectedPersonaId) ?? personas[0];
+  const selectedPersona =
+    personas.find((p) => p.id === selectedPersonaId) ?? personas[0];
 
   function handleSelectPersona(personaId: string) {
     const persona = personas.find((p) => p.id === personaId)!;
@@ -51,7 +55,9 @@ export default function HomePage() {
         id="patient-selector"
         className="flex flex-col gap-md pb-lg my-20 px-4 items-start bg-background rounded-2xl md:max-w-7xl mx-auto"
       >
-        <h2 className="pt-md pl-xs text-xl text-forest-medium">Who will you be speaking to today?</h2>
+        <h2 className="pt-md pl-xs text-xl text-forest-medium">
+          Who will you be speaking to today?
+        </h2>
         <div className="grid grid-cols-5 gap-lg">
           {/* Left — persona list + profile card */}
           <div className="col-span-2 px-4 flex flex-col">
@@ -79,7 +85,7 @@ export default function HomePage() {
               onVolumeChange={setVolumeOn}
             />
             <StartSessionButton onClick={handleStart} />
-        </div>
+          </div>
         </div>
       </section>
     </main>

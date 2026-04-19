@@ -12,9 +12,17 @@ interface PatientAuraProps {
   traineeSpeaking?: boolean;
 }
 
-function AuraSphere({ audioPlaying, loading, traineeSpeaking = false }: PatientAuraProps) {
-  const materialRef = useRef<ElementRef<typeof MeshDistortMaterial> | null>(null);
-  const shellMaterialRef = useRef<ElementRef<typeof MeshDistortMaterial> | null>(null);
+function AuraSphere({
+  audioPlaying,
+  loading,
+  traineeSpeaking = false,
+}: PatientAuraProps) {
+  const materialRef = useRef<ElementRef<typeof MeshDistortMaterial> | null>(
+    null,
+  );
+  const shellMaterialRef = useRef<ElementRef<
+    typeof MeshDistortMaterial
+  > | null>(null);
   const parallaxGroupRef = useRef<THREE.Group | null>(null);
   const coreMeshRef = useRef<THREE.Mesh | null>(null);
   const shellMeshRef = useRef<THREE.Mesh | null>(null);
@@ -30,15 +38,35 @@ function AuraSphere({ audioPlaying, loading, traineeSpeaking = false }: PatientA
       pointerRef.current.set(x, y);
     }
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
     };
   }, []);
 
-  const targetDistort = traineeSpeaking ? 0.28 : audioPlaying ? 0.4 : loading ? 0.15 : 0.05;
-  const targetSpeed = traineeSpeaking ? 2 : audioPlaying ? 3 : loading ? 0.8 : 0.4;
-  const targetOpacity = traineeSpeaking ? 0.42 : audioPlaying ? 0.5 : loading ? 0.25 : 0.15;
+  const targetDistort = traineeSpeaking
+    ? 0.28
+    : audioPlaying
+      ? 0.4
+      : loading
+        ? 0.15
+        : 0.05;
+  const targetSpeed = traineeSpeaking
+    ? 2
+    : audioPlaying
+      ? 3
+      : loading
+        ? 0.8
+        : 0.4;
+  const targetOpacity = traineeSpeaking
+    ? 0.42
+    : audioPlaying
+      ? 0.5
+      : loading
+        ? 0.25
+        : 0.15;
 
   useFrame((state, delta) => {
     const material = materialRef.current as
@@ -57,12 +85,21 @@ function AuraSphere({ audioPlaying, loading, traineeSpeaking = false }: PatientA
     const baseLight = traineeSpeaking ? 0.62 : 0.52;
 
     // Slight, low-frequency hue/sat/light variance for a more organic look.
-    const hueJitter = Math.sin(elapsed * 0.31) * 0.008 + Math.sin(elapsed * 0.17) * 0.006;
+    const hueJitter =
+      Math.sin(elapsed * 0.31) * 0.008 + Math.sin(elapsed * 0.17) * 0.006;
     const satJitter = Math.sin(elapsed * 0.23) * 0.03;
     const lightJitter = Math.sin(elapsed * 0.19) * 0.025;
 
-    colorRef.current.setHSL(baseHue + hueJitter, baseSat + satJitter, baseLight + lightJitter);
-    shellColorRef.current.setHSL(baseHue + hueJitter + 0.012, baseSat + satJitter - 0.08, baseLight + lightJitter + 0.07);
+    colorRef.current.setHSL(
+      baseHue + hueJitter,
+      baseSat + satJitter,
+      baseLight + lightJitter,
+    );
+    shellColorRef.current.setHSL(
+      baseHue + hueJitter + 0.012,
+      baseSat + satJitter - 0.08,
+      baseLight + lightJitter + 0.07,
+    );
 
     // Slower easing for calmer transitions.
     const t = 1 - Math.exp(-2.5 * delta);
@@ -85,10 +122,26 @@ function AuraSphere({ audioPlaying, loading, traineeSpeaking = false }: PatientA
       const targetPosY = -pointerRef.current.y * maxShift;
 
       // Interpolate to target transforms for smoother parallax.
-      parallaxGroup.rotation.x = THREE.MathUtils.lerp(parallaxGroup.rotation.x, targetRotX, t);
-      parallaxGroup.rotation.y = THREE.MathUtils.lerp(parallaxGroup.rotation.y, targetRotY, t);
-      parallaxGroup.position.x = THREE.MathUtils.lerp(parallaxGroup.position.x, targetPosX, t);
-      parallaxGroup.position.y = THREE.MathUtils.lerp(parallaxGroup.position.y, targetPosY, t);
+      parallaxGroup.rotation.x = THREE.MathUtils.lerp(
+        parallaxGroup.rotation.x,
+        targetRotX,
+        t,
+      );
+      parallaxGroup.rotation.y = THREE.MathUtils.lerp(
+        parallaxGroup.rotation.y,
+        targetRotY,
+        t,
+      );
+      parallaxGroup.position.x = THREE.MathUtils.lerp(
+        parallaxGroup.position.x,
+        targetPosX,
+        t,
+      );
+      parallaxGroup.position.y = THREE.MathUtils.lerp(
+        parallaxGroup.position.y,
+        targetPosY,
+        t,
+      );
     }
 
     if (coreMeshRef.current) {
@@ -111,7 +164,7 @@ function AuraSphere({ audioPlaying, loading, traineeSpeaking = false }: PatientA
             color="#ffc700"
             roughness={0.95}
             metalness={0}
-            distort={0.10}
+            distort={0.1}
             speed={0.5}
             transparent
             opacity={0.15}
@@ -137,7 +190,11 @@ function AuraSphere({ audioPlaying, loading, traineeSpeaking = false }: PatientA
   );
 }
 
-export function PatientAura({ audioPlaying, loading, traineeSpeaking = false }: PatientAuraProps) {
+export function PatientAura({
+  audioPlaying,
+  loading,
+  traineeSpeaking = false,
+}: PatientAuraProps) {
   return (
     <Canvas
       camera={{ position: [0, 0, 3] }}
@@ -148,9 +205,7 @@ export function PatientAura({ audioPlaying, loading, traineeSpeaking = false }: 
       }}
     >
       <ambientLight intensity={0.55} />
-      <hemisphereLight
-        args={["#fff6db", "#173a2f", 0.45]}
-      />
+      <hemisphereLight args={["#fff6db", "#173a2f", 0.45]} />
 
       <Sparkles
         count={28}

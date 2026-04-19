@@ -55,8 +55,14 @@ export function OptionsRow({
         <div className="flex items-center gap-xxxs">
           <button
             type="button"
-            onClick={() => onInputModeChange(inputMode === "text" ? "voice" : "text")}
-            title={inputMode === "text" ? "Switch to voice input" : "Switch to text input"}
+            onClick={() =>
+              onInputModeChange(inputMode === "text" ? "voice" : "text")
+            }
+            title={
+              inputMode === "text"
+                ? "Switch to voice input"
+                : "Switch to text input"
+            }
             className="p-xxs rounded-sm border border-forest-light/40 text-forest-medium hover:text-forest-dark hover:border-forest-light transition-colors cursor-pointer bg-transparent"
           >
             {inputMode === "voice" ? <Mic size={14} /> : <Keyboard size={14} />}

@@ -57,7 +57,10 @@ export function InsightsScreen({
             </p>
             <ul className="flex flex-col gap-xxs">
               {insights.observations.map((obs, i) => (
-                <li key={i} className="text-sm text-forest-dark leading-relaxed">
+                <li
+                  key={i}
+                  className="text-sm text-forest-dark leading-relaxed"
+                >
                   {obs}
                 </li>
               ))}
@@ -70,7 +73,10 @@ export function InsightsScreen({
             </p>
             <ul className="flex flex-col gap-xxs">
               {insights.suggestions.map((sug, i) => (
-                <li key={i} className="text-sm text-forest-dark leading-relaxed">
+                <li
+                  key={i}
+                  className="text-sm text-forest-dark leading-relaxed"
+                >
                   {sug}
                 </li>
               ))}

@@ -16,7 +16,10 @@ const MODES: { id: "chat" | "call"; label: string; description: string }[] = [
   },
 ];
 
-export function ModeSelector({ selectedMode, onSelectMode }: ModeSelectorProps) {
+export function ModeSelector({
+  selectedMode,
+  onSelectMode,
+}: ModeSelectorProps) {
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-widest text-forest-light mb-xs">
@@ -34,7 +37,9 @@ export function ModeSelector({ selectedMode, onSelectMode }: ModeSelectorProps) 
                 : "border-forest-light hover:border-forest-dark"
             }`}
           >
-            <p className="text-sm font-semibold text-forest-dark">{mode.label}</p>
+            <p className="text-sm font-semibold text-forest-dark">
+              {mode.label}
+            </p>
             <p className="text-xs text-forest-medium mt-xxxs leading-relaxed">
               {mode.description}
             </p>
