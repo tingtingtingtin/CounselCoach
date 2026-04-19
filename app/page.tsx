@@ -24,7 +24,7 @@ export default function HomePage() {
   const [selectedScenarioId, setSelectedScenarioId] =
     useState<string>(defaultScenarioId);
   const [mode, setMode] = useState<"chat" | "call">("chat");
-  const [inputMode, setInputMode] = useState<"text" | "voice">("text");
+  const [inputMode, setInputMode] = useState<"text" | "voice">("voice");
   const [volumeOn, setVolumeOn] = useState(true);
 
   // Hide skeleton after brief delay (visual polish on initial load)

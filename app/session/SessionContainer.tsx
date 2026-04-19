@@ -62,6 +62,7 @@ export function SessionContainer({
         saveSession(record);
       } catch {
         setInsights({
+          summary: "Unable to summarize this session.",
           observations: ["Unable to load insights."],
           suggestions: [],
         });

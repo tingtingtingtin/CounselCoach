@@ -15,6 +15,9 @@ async function getAccessToken(): Promise<string> {
     return cachedToken.token;
   }
   const auth = new GoogleAuth({
+    credentials: process.env.GCP_SERVICE_ACCOUNT_KEY
+      ? JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY)
+      : undefined, // falls back to ADC locally
     scopes: "https://www.googleapis.com/auth/cloud-platform",
   });
   const client = await auth.getClient();

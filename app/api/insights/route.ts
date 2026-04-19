@@ -27,11 +27,15 @@ export async function POST(req: NextRequest) {
     });
 
     const parsed = extractJSON(raw) as {
+      summary?: string;
       observations: string[];
       suggestions: string[];
     };
 
     return NextResponse.json({
+      summary:
+        parsed.summary ??
+        "Session covered core concerns and explored therapeutic responses.",
       observations: parsed.observations ?? [],
       suggestions: parsed.suggestions ?? [],
     });

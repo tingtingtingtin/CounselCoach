@@ -57,37 +57,38 @@ export function OptionsRow({
       </div>
 
       {/* Session Options — icon toggles, chat mode only */}
-      {mode === "chat" && (
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-          className="flex items-center gap-xxxs"
+
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3, delay: 0.4 }}
+        className="flex items-center gap-xxxs"
+      >
+        <button
+          type="button"
+          onClick={() =>
+            onInputModeChange(inputMode === "text" ? "voice" : "text")
+          }
+          title={
+            inputMode === "text"
+              ? "Switch to voice input"
+              : "Switch to text input"
+          }
+          className="p-xxs rounded-sm border border-forest-light/40 text-forest-medium hover:text-forest-dark hover:border-forest-light transition-colors cursor-pointer bg-transparent"
         >
-          <button
-            type="button"
-            onClick={() =>
-              onInputModeChange(inputMode === "text" ? "voice" : "text")
-            }
-            title={
-              inputMode === "text"
-                ? "Switch to voice input"
-                : "Switch to text input"
-            }
-            className="p-xxs rounded-sm border border-forest-light/40 text-forest-medium hover:text-forest-dark hover:border-forest-light transition-colors cursor-pointer bg-transparent"
-          >
-            {inputMode === "voice" ? <Mic size={14} /> : <Keyboard size={14} />}
-          </button>
+          {inputMode === "voice" ? <Mic size={14} /> : <Keyboard size={14} />}
+        </button>
+        {mode === "chat" && (
           <button
             type="button"
             onClick={() => onVolumeChange(!volumeOn)}
             title={volumeOn ? "Mute patient audio" : "Unmute patient audio"}
             className="p-xxs rounded-sm border border-forest-light/40 text-forest-medium hover:text-forest-dark hover:border-forest-light transition-colors cursor-pointer bg-transparent"
           >
-            {volumeOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+            {volumeOn ? <Volume2 size={14} /> : <VolumeX size={14} />}
           </button>
-        </motion.div>
-      )}
+        )}
+      </motion.div>
     </motion.div>
   );
 }

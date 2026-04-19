@@ -23,6 +23,7 @@ export interface Scenario {
 }
 
 export interface InsightsResult {
+  summary: string;
   observations: string[];
   suggestions: string[];
 }

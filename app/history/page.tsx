@@ -33,7 +33,7 @@ function getScenarioLabel(scenarioId: string) {
 
 function HistoryCard({ record }: { record: SessionRecord }) {
   const [transcriptOpen, setTranscriptOpen] = useState(false);
-  const [insightsOpen, setInsightsOpen] = useState(true);
+  const [insightsOpen, setInsightsOpen] = useState(false);
 
   const patientName = getPersonaName(record.personaId);
   const scenarioLabel = getScenarioLabel(record.scenarioId);
@@ -94,11 +94,22 @@ function HistoryCard({ record }: { record: SessionRecord }) {
       </div>
 
       <div className="mt-md grid gap-md lg:grid-cols-[1.1fr_0.9fr]">
+        <section className="lg:col-span-2">
+          <p className="text-xs font-semibold uppercase tracking-widest text-forest-light mb-xxs">
+            Summary
+          </p>
+          <div className="rounded-xs border border-smoke-gray bg-smoke-gray/20 p-sm">
+            <p className="text-sm leading-relaxed text-forest-dark">
+              {record.insights.summary ?? "No summary available."}
+            </p>
+          </div>
+        </section>
+
         <section>
           <button
             type="button"
             onClick={() => setInsightsOpen((current) => !current)}
-            className="flex w-full items-center justify-between gap-xs text-left"
+            className="flex w-full items-center justify-between gap-xs text-left hover:cursor-pointer"
           >
             <span className="text-xs font-semibold uppercase tracking-widest text-forest-light">
               Insights
@@ -156,7 +167,7 @@ function HistoryCard({ record }: { record: SessionRecord }) {
           <button
             type="button"
             onClick={() => setTranscriptOpen((current) => !current)}
-            className="flex w-full items-center justify-between gap-xs text-left"
+            className="flex w-full items-center justify-between gap-xs text-left hover:cursor-pointer"
           >
             <span className="text-xs font-semibold uppercase tracking-widest text-forest-light">
               Transcript
