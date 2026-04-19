@@ -17,6 +17,12 @@ export const Header = () => {
         {/* Navigation */}
         <nav className="flex items-center gap-md">
           <Link
+            href="/history"
+            className="text-small-text font-semibold text-forest-medium hover:text-forest-dark transition-colors"
+          >
+            History
+          </Link>
+          <Link
             href="/about"
             className="text-small-text font-semibold text-forest-medium hover:text-forest-dark transition-colors"
           >

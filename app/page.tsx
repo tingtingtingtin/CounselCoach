@@ -70,7 +70,10 @@ export default function HomePage() {
             <div className="col-span-2 px-4 flex flex-col gap-md">
               <div className="border border-smoke-gray rounded-t-sm overflow-hidden">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="w-full flex items-center gap-xs px-sm py-xs border-l-4 border-l-transparent">
+                  <div
+                    key={i}
+                    className="w-full flex items-center gap-xs px-sm py-xs border-l-4 border-l-transparent"
+                  >
                     <div className="w-8 h-8 rounded-circle bg-smoke-gray animate-pulse shrink-0" />
                     <div className="flex-1 space-y-2">
                       <div className="h-4 bg-smoke-gray rounded animate-pulse w-3/4" />
@@ -88,7 +91,10 @@ export default function HomePage() {
             {/* Right skeleton */}
             <div className="col-span-3 flex flex-col gap-sm px-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="p-sm border border-smoke-gray rounded-sm bg-white animate-pulse">
+                <div
+                  key={i}
+                  className="p-sm border border-smoke-gray rounded-sm bg-white animate-pulse"
+                >
                   <div className="h-5 bg-smoke-gray rounded w-1/3 mb-2" />
                   <div className="h-4 bg-smoke-gray rounded" />
                 </div>

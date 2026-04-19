@@ -9,6 +9,7 @@ import { useSessionState } from "@/hooks/useSessionState";
 import { useSessionActions } from "@/hooks/useSessionActions";
 import type { SessionEndPayload } from "./SessionContainer";
 import { PatientAvatar } from "@/components/PatientAvatar";
+import { PreSessionScreen } from "@/components/PreSessionScreen";
 import { ConversationPanel } from "@/components/ConversationPanel";
 import { SuggestionList } from "@/components/SuggestionList";
 import { TraineeInput } from "@/components/TraineeInput";
@@ -103,39 +104,17 @@ export function ChatSession({
 
   if (!sessionStarted) {
     return (
-      <div className="max-w-3xl mx-auto px-xs py-md flex flex-col my-24 font-sans items-center justify-center gap-xs text-center">
-        <div className="w-16 h-16 rounded-circle bg-smoke-gray flex items-center justify-center text-forest-medium font-semibold text-xl">
-          {persona.avatarInitials}
-        </div>
-        <div>
-          <p className="text-xl font-medium text-forest-dark">
-            {persona.patientName}
-          </p>
-          <p className="text-sm text-forest-medium mt-xxs">
-            {persona.age} · {scenario.label}
-          </p>
-        </div>
-        <div className="mt-sm">
-          <p className="text-sm text-left mb-xxxs">Presenting Concern</p>
-          <blockquote className="pl-xs border-l-4 border-forest-light">
-            <p className="text-sm text-forest-medium italic leading-relaxed">
-              {persona.presentingConcern}
-            </p>
-          </blockquote>
-        </div>
-        <button
-          onClick={handleBeginSession}
-          className="mt-xs px-sm py-xxs rounded-circle bg-primary-yellow text-forest-dark font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity border-none"
-        >
-          Begin Session
-        </button>
-      </div>
+      <PreSessionScreen
+        persona={persona}
+        scenario={scenario}
+        onBegin={handleBeginSession}
+      />
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-xs py-md flex flex-col min-h-screen font-sans">
-      <div className="flex justify-between items-start mb-sm">
+    <div className="max-w-3xl mx-auto px-xs py-md flex flex-col min-h-[95vh] font-sans">
+      <div className="flex justify-between items-start">
         <PatientAvatar
           avatarInitials={persona.avatarInitials}
           patientName={persona.patientName}
@@ -180,41 +159,45 @@ export function ChatSession({
         </Dialog.Root>
       </div>
 
-      <ConversationPanel
-        history={history}
-        loading={loading}
-        audioPlaying={audioPlaying}
-        firstName={firstName}
-        bottomRef={bottomRef}
-      />
-
-      <SuggestionList
-        suggestions={suggestions}
-        loading={loading}
-        audioPlaying={audioPlaying}
-        onSelectSuggestion={setInput}
-      />
-
-      {error && (
-        <ErrorBanner
-          error={error}
-          onRetry={() => {
-            dispatch({ type: "RETRY" });
-            fetchPatientResponse(history);
-          }}
+      <div className="flex flex-col gap-xxs flex-1 min-h-0">
+        <ConversationPanel
+          history={history}
+          loading={loading}
+          audioPlaying={audioPlaying}
+          firstName={firstName}
+          bottomRef={bottomRef}
         />
-      )}
 
-      <TraineeInput
-        input={input}
-        onInputChange={setInput}
-        onSubmit={handleSubmit}
-        onAutoSubmit={handleAutoSubmit}
-        loading={loading}
-        audioPlaying={audioPlaying}
-        inputMode={inputMode}
-        onInputModeChange={setInputMode}
-      />
+        <SuggestionList
+          suggestions={suggestions}
+          loading={loading}
+          audioPlaying={audioPlaying}
+          onSelectSuggestion={setInput}
+        />
+
+        {error && (
+          <ErrorBanner
+            error={error}
+            onRetry={() => {
+              dispatch({ type: "RETRY" });
+              fetchPatientResponse(history);
+            }}
+          />
+        )}
+
+        <div className="mt-xxs">
+          <TraineeInput
+            input={input}
+            onInputChange={setInput}
+            onSubmit={handleSubmit}
+            onAutoSubmit={handleAutoSubmit}
+            loading={loading}
+            audioPlaying={audioPlaying}
+            inputMode={inputMode}
+            onInputModeChange={setInputMode}
+          />
+        </div>
+      </div>
     </div>
   );
 }
