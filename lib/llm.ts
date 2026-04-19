@@ -171,6 +171,7 @@ export function extractJSON(raw: string): unknown {
   try {
     return JSON.parse(candidate);
   } catch (e) {
+    console.log(candidate);
     if (e instanceof SyntaxError) {
       return JSON.parse(fixUnescapedQuotes(candidate));
     }
