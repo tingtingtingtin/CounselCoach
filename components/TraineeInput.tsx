@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { Mic, Keyboard } from "lucide-react";
 
 const SILENCE_DELAY_MS = 1500;
@@ -60,7 +62,15 @@ export function TraineeInput({
       SpeechRecognition.stopListening();
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     }
-  }, [inputMode, audioPlaying, loading, listening, browserSupportsSpeechRecognition, isMicrophoneAvailable, resetTranscript]);
+  }, [
+    inputMode,
+    audioPlaying,
+    loading,
+    listening,
+    browserSupportsSpeechRecognition,
+    isMicrophoneAvailable,
+    resetTranscript,
+  ]);
 
   // Sync transcript to input and reset silence timer on each new word
   useEffect(() => {
@@ -86,7 +96,14 @@ export function TraineeInput({
     return () => {
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     };
-  }, [transcript, inputMode, listening, onInputChange, onAutoSubmit, resetTranscript]);
+  }, [
+    transcript,
+    inputMode,
+    listening,
+    onInputChange,
+    onAutoSubmit,
+    resetTranscript,
+  ]);
 
   return (
     <form onSubmit={onSubmit} className="flex gap-xxs items-center">
@@ -106,15 +123,23 @@ export function TraineeInput({
                 : "Your response…"
         }
         className={`flex-1 px-sm py-xxs rounded-circle border border-forest-light text-base text-forest-dark outline-none font-sans transition-colors ${
-          disabled || inputMode === "voice" ? "bg-smoke-gray opacity-60" : "bg-white"
+          disabled || inputMode === "voice"
+            ? "bg-smoke-gray opacity-60"
+            : "bg-white"
         }`}
       />
 
       {browserSupportsSpeechRecognition && isMicrophoneAvailable && (
         <button
           type="button"
-          onClick={() => onInputModeChange(inputMode === "text" ? "voice" : "text")}
-          title={inputMode === "voice" ? "Switch to text input" : "Switch to voice input"}
+          onClick={() =>
+            onInputModeChange(inputMode === "text" ? "voice" : "text")
+          }
+          title={
+            inputMode === "voice"
+              ? "Switch to text input"
+              : "Switch to voice input"
+          }
           className={`flex items-center justify-center w-10 h-10 rounded-circle border transition-colors ${
             inputMode === "voice"
               ? "bg-forest-dark border-forest-dark text-white"

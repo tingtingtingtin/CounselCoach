@@ -1,28 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
-import { GoogleAuth } from "google-auth-library";
 import type { Turn } from "@/lib/types";
 import { PATIENT_SYSTEM_PROMPT_BASE } from "@/lib/prompts";
 import { scenarios } from "@/lib/scenarios";
 import { personas } from "@/lib/personas";
-
-let cachedToken: { token: string; expiry: number } | null = null;
-
-async function getAccessToken() {
-  if (cachedToken && Date.now() < cachedToken.expiry) {
-    return cachedToken.token;
-  }
-  const auth = new GoogleAuth({
-    scopes: "https://www.googleapis.com/auth/cloud-platform",
-  });
-  const client = await auth.getClient();
-  const result = await client.getAccessToken();
-  cachedToken = {
-    token: result.token!,
-    expiry: Date.now() + 55 * 60 * 1000,
-  };
-  return cachedToken.token;
-}
+import { createLLMClient } from "@/lib/llm";
 
 export async function POST(req: NextRequest) {
   try {
@@ -57,23 +38,12 @@ Opening line (first turn only): "${persona.presentingConcern}"
 ## Session behavior
 ${scenario.systemPrompt}`;
 
-    const PROJECT_ID = process.env.GCP_PROJECT_ID!;
-    const REGION = process.env.GCP_LOCATION ?? "global";
-    const MODEL = process.env.MODEL ?? "google/gemma-4-26b-a4b-it-maas";
+    const { client, model: MODEL } = await createLLMClient();
 
-    const baseURL =
-      REGION === "global"
-        ? `https://aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/global/endpoints/openapi`
-        : `https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/endpoints/openapi`;
-
-    const accessToken = await getAccessToken();
-
-    const client = new OpenAI({
-      baseURL,
-      apiKey: accessToken,
-    });
-
-    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    const messages: {
+      role: "system" | "user" | "assistant";
+      content: string;
+    }[] = [
       { role: "system", content: systemPrompt },
       ...(history.length === 0
         ? [
