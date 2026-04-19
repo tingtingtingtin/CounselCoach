@@ -10,7 +10,7 @@ export function HeroSection() {
       <h1 className="text-5xl font-normal text-forest-dark leading-tight tracking-tight">
         Practice before the
         <br />
-        session that matters.
+        session that <strong>matters</strong>.
       </h1>
       <p className="text-xl font-normal text-forest-medium mt-sm max-w-3xl mx-auto leading-relaxed">
         Roleplay with an AI patient. Get real-time response suggestions. Review

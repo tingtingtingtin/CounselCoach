@@ -95,9 +95,9 @@ const SessionContent = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [history, loading, audioPlaying]);
+  // useEffect(() => {
+  //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [history, loading, audioPlaying]);
 
   const playUtterance = useCallback(
     async (text: string) => {
@@ -209,7 +209,7 @@ const SessionContent = () => {
   // Pre-session: show patient info and a begin button
   if (!state.sessionStarted) {
     return (
-      <div className="max-w-3xl mx-auto px-xs py-md flex flex-col min-h-screen font-sans items-center justify-center gap-xs text-center">
+      <div className="max-w-3xl mx-auto px-xs py-md flex flex-col my-24 font-sans items-center justify-center gap-xs text-center">
         <div className="w-16 h-16 rounded-circle bg-smoke-gray flex items-center justify-center text-forest-medium font-semibold text-xl">
           {persona.avatarInitials}
         </div>
@@ -221,9 +221,14 @@ const SessionContent = () => {
             {persona.age} · {scenario.label}
           </p>
         </div>
-        <p className="text-sm text-forest-medium max-w-sm leading-relaxed italic">
-          &ldquo;{persona.presentingConcern}&rdquo;
-        </p>
+        <div className="mt-sm">
+          <p className="text-sm text-left mb-xxxs">Presenting Concern</p>
+          <blockquote className="pl-xs border-l-4 border-forest-light">
+            <p className="text-sm text-forest-medium italic leading-relaxed">
+              {persona.presentingConcern}
+            </p>
+          </blockquote>
+        </div>
         <button
           onClick={handleBeginSession}
           className="mt-xs px-sm py-xxs rounded-circle bg-primary-yellow text-forest-dark font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity"

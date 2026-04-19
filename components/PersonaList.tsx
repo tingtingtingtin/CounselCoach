@@ -21,7 +21,7 @@ export function PersonaList({
           <button
             key={persona.id}
             onClick={() => onSelectPersona(persona.id)}
-            className={`w-full flex items-center gap-xs px-sm py-xs text-left transition-colors border-l-4 ${
+            className={`w-full flex items-center gap-xs px-sm py-xs text-left transition-colors border-l-4 hover:cursor-pointer ${
               selectedPersonaId === persona.id
                 ? "border-l-forest-dark bg-forest-dark/5"
                 : "border-l-transparent hover:bg-smoke-gray"

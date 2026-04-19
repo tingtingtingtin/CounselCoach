@@ -44,7 +44,7 @@ export default function HomePage() {
 
       <div
         id="patient-selector"
-        className="mx-lg grid grid-cols-5 gap-lg mt-lg py-lg mb-lg items-start bg-background p-4 rounded-2xl"
+        className="grid grid-cols-5 gap-lg py-lg my-20 px-4 items-start bg-background rounded-2xl md:max-w-7xl mx-auto"
       >
         {/* Left — scrollable persona list */}
         <div className="col-span-2 px-4">
