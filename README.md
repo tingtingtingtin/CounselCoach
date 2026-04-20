@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CounselCoach
 
-## Getting Started
+Practice therapy conversations with an AI patient before the sessions that matter.
 
-First, run the development server:
+[counselcoach.tech](https://counselcoach.tech)
+
+---
+
+## Overview
+
+CounselCoach is a therapist training simulator. A voiced AI patient presents a clinical scenario — the trainee responds by text or voice, receives real-time suggested responses, and gets a post-session debrief with observations and suggestions.
+
+Two modes: **Chat** (transcript + suggestions visible) and **Call** (voice only, no transcript, closer to a real session).
+
+---
+
+## Tech Stack
+
+- **Framework** — Next.js App Router, TypeScript
+- **Styling** — Tailwind CSS v4, Base UI
+- **3D** — React Three Fiber, Drei
+- **Animation** — Framer Motion
+- **Patient LLM** — Gemma 4 26B A4B / Gemini 2.5 Flash via GCP Vertex AI
+- **Insights LLM** — Gemini 2.5 Flash via GCP Vertex AI
+- **TTS** — ElevenLabs
+- **STT** — Browser SpeechRecognition API
+- **Deployment** — Vercel
+
+---
+
+## Project Structure
+
+```
+app/
+  page.tsx                  # Landing page — persona, scenario, mode selection
+  session/
+    page.tsx                # Session router — renders ChatSession or CallSession
+    ChatSession.tsx         # Chat mode session UI
+    CallSession.tsx         # Call mode session UI
+    InsightsScreen.tsx      # Post-session debrief
+  api/
+    chat/route.ts           # Patient utterance + suggestion generation
+    tts/route.ts            # ElevenLabs TTS proxy
+    insights/route.ts       # Post-session insights generation
+
+lib/
+  personas.ts               # Patient personas with voice IDs and affect
+  scenarios.ts              # Scenario definitions and behavioral prompts
+  prompts.ts                # LLM system prompts
+  types.ts                  # Shared TypeScript types
+  llm.ts                    # Vertex AI client — Gemma and Gemini
+  storage.ts                # localStorage session persistence
+  useSessionState.ts        # Shared useReducer hook for session state
+  useSessionActions.ts      # Shared fetch + audio logic
+```
+
+---
+
+## Running Locally
+
+```bash
+git clone https://github.com/tingtingtingtin/counselcoach
+cd counselcoach
+npm install
+```
+
+`.env.local` and fill in your keys:
+
+```
+ELEVENLABS_API_KEY=
+GCP_CLOUD_PROJECT=
+GCP_CLOUD_LOCATION=us-central1
+MODEL=gemini-2.5-flash-001
+INSIGHTS_MODEL=gemini-2.5-flash-001
+GCP_SERVICE_ACCOUNT_KEY=
+```
+
+For `GCP_SERVICE_ACCOUNT_KEY`, paste the full contents of your GCP service account JSON as a single string.
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Future Improvements
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Polyfill for Web Speech API (cross-browser compatibility)
+- Mobile responsiveness
+- Accessibility (a11y) with ARIA-tags
