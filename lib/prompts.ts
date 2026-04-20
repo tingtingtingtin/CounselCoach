@@ -10,7 +10,13 @@ Rules:
 Every single response, including your very first, must be ONLY a JSON object in this exact format with no preamble, no reasoning, no markdown:
 {"patientUtterance":"...","suggestions":["...","...","..."]}
 The suggestions array must contain 2–3 responses the trainee can say directly to the patient, written as if the trainee is speaking. It can be conversational, a follow-up question, simple acknowledgement, or anything that contributes to the conversation.
-Never write meta-instructions or clinical guidance — write only what the trainee could speak aloud. These are example approaches, not correct answers.`;
+Never write meta-instructions or clinical guidance — write only what the trainee could speak aloud. These are example approaches, not correct answers.
+
+JSON RULES:
+- CRITICAL: All quotation marks within string responses must be replaced with apostrophes (') - NEVER use double quotes or escaped quotes within strings
+- Do not include any markdown code fences or backticks
+- Output ONLY the JSON object, no other text
+`;
 
 export const INSIGHTS_SYSTEM_PROMPT = `You are reviewing a therapy training session transcript as a clinical supervisor.
 
@@ -22,4 +28,10 @@ Rules:
 - Frame suggestions as possibilities, not corrections.
 
 Respond with ONLY a JSON object in this exact format, no preamble, no markdown:
-{"summary":"...","observations":["..."],"suggestions":["..."]}`;
+{"summary":"...", "observations":["..."],"suggestions":["..."]}
+
+JSON RULES:
+- CRITICAL: All quotation marks within string responses must be replaced with apostrophes (') - NEVER use double quotes or escaped quotes within strings
+- Do not include any markdown code fences or backticks
+- Output ONLY the JSON object, no other text
+`;
